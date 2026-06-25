@@ -108,7 +108,7 @@ export default function HomePage() {
       {/* Hero carousel — Tata CLiQ-style full-bleed */}
       <section className="relative bg-white">
         <div className="max-w-[1480px] mx-auto">
-          <div className="relative aspect-[1440/450] min-h-[280px] max-h-[520px] overflow-hidden">
+          <div className="relative h-[58vw] min-h-[280px] max-h-[520px] sm:aspect-[1440/450] sm:h-auto overflow-hidden">
             {banners.map((b, i) => (
               <div
                 key={b.banner_id}
@@ -118,12 +118,12 @@ export default function HomePage() {
                   <img src={b.image_url} alt={b.title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/15 to-transparent" />
                   <div className="absolute inset-0 flex items-center">
-                    <div className="px-6 md:px-12 lg:px-20 max-w-2xl text-white">
-                      <div className="text-xs md:text-sm tracking-[0.25em] font-bold uppercase opacity-90">{b.subtitle || "New Drop"}</div>
-                      <h1 className="font-display font-black tracking-tighter text-3xl md:text-5xl lg:text-6xl mt-3 leading-[1.05]">
+                    <div className="px-4 sm:px-6 md:px-12 lg:px-20 max-w-[85%] sm:max-w-md md:max-w-2xl text-white">
+                      <div className="text-[10px] sm:text-xs md:text-sm tracking-[0.2em] md:tracking-[0.25em] font-bold uppercase opacity-90">{b.subtitle || "New Drop"}</div>
+                      <h1 className="font-display font-black tracking-tighter text-2xl sm:text-3xl md:text-5xl lg:text-6xl mt-2 md:mt-3 leading-[1.05]">
                         {b.title}
                       </h1>
-                      <div className="mt-6 inline-flex items-center gap-2 bg-white text-[var(--text)] px-6 py-3 rounded-sm font-bold text-sm hover:bg-[var(--brand-pink)] hover:text-white transition-colors">
+                      <div className="mt-4 md:mt-6 inline-flex items-center gap-2 bg-white text-[var(--text)] px-4 md:px-6 py-2.5 md:py-3 rounded-sm font-bold text-xs md:text-sm hover:bg-[var(--brand-pink)] hover:text-white transition-colors">
                         SHOP NOW <ArrowRight size={14} />
                       </div>
                     </div>

@@ -60,24 +60,24 @@ export default function SearchAutosuggest() {
   const hasResults = results.products.length > 0 || results.brands.length > 0;
 
   return (
-    <div ref={wrap} className="relative flex-1 max-w-2xl">
-      <form onSubmit={submit} className="flex w-full items-center bg-white rounded">
-        <Search size={16} className="mx-3 text-[var(--brand-blue)]" />
+    <div ref={wrap} className="relative flex-1 min-w-0 max-w-2xl">
+      <form onSubmit={submit} className="flex w-full items-center bg-white rounded border hairline md:border-0">
+        <Search size={16} className="mx-2 md:mx-3 text-[var(--brand-blue)] flex-shrink-0" />
         <input
           data-testid="search-input"
           value={q}
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKey}
-          placeholder="Search for products, brands and more"
-          className="w-full bg-transparent text-sm py-2 outline-none text-[var(--text)] placeholder:text-[var(--text-mute)]"
+          placeholder="Search products, brands..."
+          className="w-full min-w-0 bg-transparent text-sm py-2 outline-none text-[var(--text)] placeholder:text-[var(--text-mute)]"
         />
         {q && (
-          <button type="button" onClick={() => { setQ(""); setResults({ products: [], brands: [] }); }} className="px-2 text-[var(--text-mute)] hover:text-[var(--text)]" aria-label="Clear">
+          <button type="button" onClick={() => { setQ(""); setResults({ products: [], brands: [] }); }} className="px-2 text-[var(--text-mute)] hover:text-[var(--text)] flex-shrink-0" aria-label="Clear">
             <X size={14} />
           </button>
         )}
-        <button data-testid="search-submit" type="submit" className="eyebrow px-4 py-2 bg-[var(--brand-yellow)] text-[var(--text)] hover:bg-[#FFD400] transition-colors rounded-r">GO</button>
+        <button data-testid="search-submit" type="submit" className="eyebrow px-3 md:px-4 py-2 bg-[var(--brand-yellow)] text-[var(--text)] hover:bg-[#FFD400] transition-colors rounded-r flex-shrink-0">GO</button>
       </form>
 
       {open && q.trim() && hasResults && (

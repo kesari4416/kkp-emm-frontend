@@ -30,26 +30,26 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white text-[var(--text)] border-b hairline shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-      {/* Top thin utility bar */}
-      <div className="bg-[var(--bg)] border-b hairline text-xs text-[var(--text-mute)]">
+      {/* Top thin utility bar — hidden on mobile (saves vertical space) */}
+      <div className="hidden md:block bg-[var(--bg)] border-b hairline text-xs text-[var(--text-mute)]">
         <div className="max-w-[1480px] mx-auto px-4 md:px-8 h-7 flex items-center justify-end gap-5">
-          <span className="hidden md:inline">Welcome to KKP STORES</span>
-          <a className="hidden md:inline hover:text-[var(--brand-pink)] cursor-pointer">Become a Seller</a>
-          <a className="hidden md:inline hover:text-[var(--brand-pink)] cursor-pointer">Customer Care</a>
+          <span>Welcome to KKP STORES</span>
+          <a className="hover:text-[var(--brand-pink)] cursor-pointer">Become a Seller</a>
+          <a className="hover:text-[var(--brand-pink)] cursor-pointer">Customer Care</a>
           <a className="hover:text-[var(--brand-pink)] cursor-pointer">Track Order</a>
-          <span className="hidden md:inline border-l hairline pl-5">₹ INR</span>
+          <span className="border-l hairline pl-5">₹ INR</span>
         </div>
       </div>
 
       {/* Main nav bar — logo + search + user actions */}
-      <div className="max-w-[1480px] mx-auto px-4 md:px-8 h-16 flex items-center gap-4 md:gap-8">
+      <div className="max-w-[1480px] mx-auto px-3 md:px-8 h-14 md:h-16 flex items-center gap-2 md:gap-8">
         <Link to="/" data-testid="logo-link" className="flex items-baseline flex-shrink-0">
           <BrandLogo size="md" />
         </Link>
 
         <SearchAutosuggest />
 
-        <div className="flex items-center gap-1 md:gap-3 ml-auto flex-shrink-0">
+        <div className="flex items-center gap-0 md:gap-3 ml-auto flex-shrink-0">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -81,12 +81,13 @@ export default function Navbar() {
             <button
               data-testid="login-link"
               onClick={() => nav("/login")}
-              className="text-sm font-semibold hover:text-[var(--brand-pink)] px-2 py-1"
+              className="text-xs md:text-sm font-semibold hover:text-[var(--brand-pink)] px-1.5 md:px-2 py-1 whitespace-nowrap"
             >
-              Sign In
+              <User size={18} className="md:hidden" />
+              <span className="hidden md:inline">Sign In</span>
             </button>
           )}
-          <Link to="/wishlist" data-testid="wishlist-link" className="relative px-2 py-1 hover:text-[var(--brand-pink)] flex items-center gap-1 text-sm">
+          <Link to="/wishlist" data-testid="wishlist-link" className="relative px-1.5 md:px-2 py-1 hover:text-[var(--brand-pink)] flex items-center gap-1 text-sm">
             <Heart size={18} />
             <span className="hidden md:inline font-semibold">Wishlist</span>
             {wishlist.length > 0 && (
@@ -95,7 +96,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <Link to="/cart" data-testid="cart-link" className="relative px-2 py-1 hover:text-[var(--brand-pink)] flex items-center gap-1 text-sm">
+          <Link to="/cart" data-testid="cart-link" className="relative px-1.5 md:px-2 py-1 hover:text-[var(--brand-pink)] flex items-center gap-1 text-sm">
             <ShoppingBag size={18} />
             <span className="hidden md:inline font-semibold">Bag</span>
             {items.length > 0 && (
@@ -110,14 +111,14 @@ export default function Navbar() {
       {/* Category strip */}
       <div className="border-t hairline">
         <div className="max-w-[1480px] mx-auto px-2 md:px-8 overflow-x-auto no-scrollbar">
-          <nav className="flex items-center justify-start md:justify-center gap-1">
+          <nav className="flex items-center justify-start md:justify-center gap-0 md:gap-1">
             {categoryTabs.map((t) => (
               <NavLink
                 key={t.to}
                 to={t.to}
                 data-testid={`nav-${t.label.toLowerCase()}`}
                 className={({ isActive }) =>
-                  `text-xs md:text-[13px] font-bold tracking-wider uppercase whitespace-nowrap px-3 md:px-5 py-3 transition-colors border-b-2 ${
+                  `text-[11px] md:text-[13px] font-bold tracking-wider uppercase whitespace-nowrap px-2.5 md:px-5 py-2.5 md:py-3 transition-colors border-b-2 ${
                     isActive
                       ? "text-[var(--brand-pink)] border-[var(--brand-pink)]"
                       : t.accent

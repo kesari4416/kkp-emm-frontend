@@ -14,7 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Filter } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Filter, SlidersHorizontal } from "lucide-react";
 
 const GENDER_HERO = {
   women: {
@@ -201,15 +202,15 @@ export default function ShopPage() {
       {/* Landing hero — only when browsing a clean gender (no specific filters) */}
       {showLanding && hero && (
         <section className="relative bg-black text-white border-b hairline" data-testid="gender-landing-hero">
-          <div className="relative aspect-[1440/360] min-h-[220px] max-h-[420px] overflow-hidden">
+          <div className="relative h-[58vw] min-h-[220px] max-h-[420px] sm:aspect-[1440/360] sm:h-auto overflow-hidden">
             <img src={hero.image} alt={gender} className="absolute inset-0 w-full h-full object-cover opacity-80" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
             <div className="relative max-w-[1480px] mx-auto px-4 md:px-8 h-full flex flex-col justify-center">
               <div className="text-[10px] md:text-xs tracking-[0.3em] font-bold uppercase opacity-90">Shop {gender}</div>
-              <h1 className="font-display font-black tracking-tighter text-3xl md:text-5xl lg:text-6xl mt-2 max-w-2xl leading-[1.05]">
+              <h1 className="font-display font-black tracking-tighter text-2xl sm:text-3xl md:text-5xl lg:text-6xl mt-2 max-w-[88%] sm:max-w-md md:max-w-2xl leading-[1.05]">
                 {hero.title}
               </h1>
-              <p className="mt-3 text-white/85 max-w-lg text-sm md:text-base">{hero.sub}</p>
+              <p className="mt-3 text-white/85 max-w-[90%] sm:max-w-md md:max-w-lg text-sm md:text-base">{hero.sub}</p>
             </div>
           </div>
         </section>
@@ -231,20 +232,58 @@ export default function ShopPage() {
         />
       )}
 
-      <div className="max-w-[1480px] mx-auto px-4 md:px-8 py-10">
-        <div className="flex items-end justify-between border-b hairline pb-6 mb-8">
-          <div>
+      <div className="max-w-[1480px] mx-auto px-4 md:px-8 py-6 md:py-10">
+        <div className="flex items-end justify-between border-b hairline pb-4 md:pb-6 mb-6 md:mb-8 gap-3">
+          <div className="min-w-0">
             <div className="eyebrow text-[var(--text-mute)]">{showLanding ? `All ${gender}` : "Catalogue"}</div>
-            <h2 className="font-display font-black tracking-tight text-3xl sm:text-4xl mt-2">
+            <h2 className="font-display font-black tracking-tight text-2xl sm:text-3xl md:text-4xl mt-1 md:mt-2 truncate">
               {search ? `“${search}”` : categoryType ? categoryType.toUpperCase() : gender ? gender.toUpperCase() : "ALL"}
             </h2>
-            <div className="mt-2 text-sm text-[var(--text-mute)]">
+            <div className="mt-1 md:mt-2 text-xs md:text-sm text-[var(--text-mute)]">
               {products.length} {products.length === 1 ? "piece" : "pieces"}
             </div>
           </div>
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-2 items-center flex-shrink-0">
+            {/* Mobile filter trigger */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-testid="mobile-filter-trigger"
+                  className="lg:hidden rounded-sm border-[var(--border-dark)] h-10 px-3 gap-2"
+                >
+                  <SlidersHorizontal size={14} /> <span className="text-xs font-bold uppercase tracking-wider">Filter</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[88vw] sm:w-[380px] overflow-y-auto p-4" data-testid="mobile-filter-sheet">
+                <SheetTitle className="font-display font-black text-lg mt-2">Filters</SheetTitle>
+                <SheetDescription className="sr-only">Refine the product list by category, brand, size, color, and price.</SheetDescription>
+                <div className="mt-4">
+                  <FiltersPanel
+                    gender={gender}
+                    categoryId={categoryId}
+                    visibleCategories={visibleCategories}
+                    facets={facets}
+                    brands={brands}
+                    sizes={sizes}
+                    colors={colors}
+                    featured={featured}
+                    draftPrice={draftPrice}
+                    setDraftPrice={setDraftPrice}
+                    setPriceRange={setPriceRange}
+                    setParam={setParam}
+                    toggle={toggle}
+                    onClear={() => {
+                      setSp(new URLSearchParams(), { replace: true });
+                      setPriceRange([0, 20000]);
+                      setDraftPrice([0, 20000]);
+                    }}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
             <Select value={sort} onValueChange={(v) => setParam("sort", v)}>
-              <SelectTrigger data-testid="sort-select" className="w-44 rounded-sm border-[var(--border-dark)]">
+              <SelectTrigger data-testid="sort-select" className="w-32 md:w-44 rounded-sm border-[var(--border-dark)] h-10 text-xs md:text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="rounded-sm">
@@ -258,110 +297,27 @@ export default function ShopPage() {
         </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        <aside className="space-y-8">
-          <div>
-            <div className="eyebrow mb-3 flex items-center gap-2"><Filter size={12} /> Gender</div>
-            <div className="space-y-2 text-sm">
-              {["", "men", "women", "kids", "unisex"].map((g) => (
-                <button
-                  key={g || "all"}
-                  data-testid={`filter-gender-${g || "all"}`}
-                  onClick={() => setParam("gender", g)}
-                  className={`block w-full text-left py-1 transition-colors ${
-                    gender === g ? "text-[var(--accent)] font-semibold" : "hover:text-[var(--accent)]"
-                  }`}
-                >
-                  {g ? g.toUpperCase() : "ALL"}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div className="eyebrow mb-3">Category</div>
-            <div className="space-y-2 text-sm max-h-72 overflow-auto no-scrollbar">
-              <button
-                onClick={() => setParam("category_id", "")}
-                className={`block w-full text-left py-1 ${!categoryId ? "text-[var(--accent)] font-semibold" : "hover:text-[var(--accent)]"}`}
-              >
-                All categories
-              </button>
-              {visibleCategories.map((c) => (
-                <button
-                  key={c.category_id}
-                  data-testid={`filter-cat-${c.slug}`}
-                  onClick={() => setParam("category_id", c.category_id)}
-                  className={`block w-full text-left py-1 ${
-                    categoryId === c.category_id ? "text-[var(--accent)] font-semibold" : "hover:text-[var(--accent)]"
-                  }`}
-                >
-                  {c.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <FacetChips
-            label="Brand"
-            options={facets.brands}
-            selected={brands}
-            onToggle={(v) => toggle("brands", brands, v)}
-            testidPrefix="filter-brand"
-          />
-          <FacetChips
-            label="Size"
-            options={facets.sizes}
-            selected={sizes}
-            onToggle={(v) => toggle("sizes", sizes, v)}
-            testidPrefix="filter-size"
-          />
-          <FacetChips
-            label="Color"
-            options={facets.colors}
-            selected={colors}
-            onToggle={(v) => toggle("colors", colors, v)}
-            testidPrefix="filter-color"
-          />
-
-          <div>
-            <div className="eyebrow mb-4">Price</div>
-            <Slider
-              value={draftPrice}
-              onValueChange={setDraftPrice}
-              onValueCommit={setPriceRange}
-              min={0}
-              max={20000}
-              step={100}
-              className="mt-2"
-              data-testid="price-slider"
-            />
-            <div className="mt-3 flex justify-between text-xs text-[var(--text-mute)] font-mono">
-              <span>₹{draftPrice[0]}</span>
-              <span>₹{draftPrice[1]}</span>
-            </div>
-          </div>
-
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox
-              checked={featured}
-              data-testid="filter-featured"
-              onCheckedChange={(v) => setParam("featured", v ? "true" : "")}
-            />
-            Featured only
-          </label>
-
-          <Button
-            variant="outline"
-            onClick={() => {
+        <aside className="hidden lg:block space-y-8">
+          <FiltersPanel
+            gender={gender}
+            categoryId={categoryId}
+            visibleCategories={visibleCategories}
+            facets={facets}
+            brands={brands}
+            sizes={sizes}
+            colors={colors}
+            featured={featured}
+            draftPrice={draftPrice}
+            setDraftPrice={setDraftPrice}
+            setPriceRange={setPriceRange}
+            setParam={setParam}
+            toggle={toggle}
+            onClear={() => {
               setSp(new URLSearchParams(), { replace: true });
               setPriceRange([0, 20000]);
               setDraftPrice([0, 20000]);
             }}
-            className="w-full rounded-none border-black hover:bg-black hover:text-white"
-            data-testid="clear-filters"
-          >
-            Clear filters
-          </Button>
+          />
         </aside>
 
         <div>
@@ -379,6 +335,127 @@ export default function ShopPage() {
         </div>
       </div>
       </div>
+    </div>
+  );
+}
+
+function FiltersPanel({
+  gender,
+  categoryId,
+  visibleCategories,
+  facets,
+  brands,
+  sizes,
+  colors,
+  featured,
+  draftPrice,
+  setDraftPrice,
+  setPriceRange,
+  setParam,
+  toggle,
+  onClear,
+}) {
+  return (
+    <div className="space-y-7">
+      <div>
+        <div className="eyebrow mb-3 flex items-center gap-2"><Filter size={12} /> Gender</div>
+        <div className="space-y-2 text-sm">
+          {["", "men", "women", "kids", "unisex"].map((g) => (
+            <button
+              key={g || "all"}
+              data-testid={`filter-gender-${g || "all"}`}
+              onClick={() => setParam("gender", g)}
+              className={`block w-full text-left py-1 transition-colors ${
+                gender === g ? "text-[var(--accent)] font-semibold" : "hover:text-[var(--accent)]"
+              }`}
+            >
+              {g ? g.toUpperCase() : "ALL"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="eyebrow mb-3">Category</div>
+        <div className="space-y-2 text-sm max-h-72 overflow-auto no-scrollbar">
+          <button
+            onClick={() => setParam("category_id", "")}
+            className={`block w-full text-left py-1 ${!categoryId ? "text-[var(--accent)] font-semibold" : "hover:text-[var(--accent)]"}`}
+          >
+            All categories
+          </button>
+          {visibleCategories.map((c) => (
+            <button
+              key={c.category_id}
+              data-testid={`filter-cat-${c.slug}`}
+              onClick={() => setParam("category_id", c.category_id)}
+              className={`block w-full text-left py-1 ${
+                categoryId === c.category_id ? "text-[var(--accent)] font-semibold" : "hover:text-[var(--accent)]"
+              }`}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <FacetChips
+        label="Brand"
+        options={facets.brands}
+        selected={brands}
+        onToggle={(v) => toggle("brands", brands, v)}
+        testidPrefix="filter-brand"
+      />
+      <FacetChips
+        label="Size"
+        options={facets.sizes}
+        selected={sizes}
+        onToggle={(v) => toggle("sizes", sizes, v)}
+        testidPrefix="filter-size"
+      />
+      <FacetChips
+        label="Color"
+        options={facets.colors}
+        selected={colors}
+        onToggle={(v) => toggle("colors", colors, v)}
+        testidPrefix="filter-color"
+      />
+
+      <div>
+        <div className="eyebrow mb-4">Price</div>
+        <Slider
+          value={draftPrice}
+          onValueChange={setDraftPrice}
+          onValueCommit={setPriceRange}
+          min={0}
+          max={20000}
+          step={100}
+          className="mt-2"
+          data-testid="price-slider"
+        />
+        <div className="mt-3 flex justify-between text-xs text-[var(--text-mute)] font-mono">
+          <span>₹{draftPrice[0]}</span>
+          <span>₹{draftPrice[1]}</span>
+        </div>
+      </div>
+
+      <label className="flex items-center gap-2 text-sm">
+        <Checkbox
+          checked={featured}
+          data-testid="filter-featured"
+          onCheckedChange={(v) => setParam("featured", v ? "true" : "")}
+        />
+        Featured only
+      </label>
+
+      <Button
+        variant="outline"
+        onClick={onClear}
+        className="w-full rounded-none border-black hover:bg-black hover:text-white"
+        data-testid="clear-filters"
+      >
+        Clear filters
+      </Button>
     </div>
   );
 }
